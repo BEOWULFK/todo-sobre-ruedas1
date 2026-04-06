@@ -24,3 +24,34 @@
     try{ xhr.send(); }catch(e){ setProductos([]); }
   }
 })();
+
+let productos = [];
+
+async function cargarDesdeGoogleSheets() {
+  try {
+    const url = "https://opensheet.elk.sh/1ohf6HDKaVAB9pZ6ArUuzIYLi5AKHnb0PXwzvLDo8qKM/Hoja1";
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    productos = data.map(p => ({
+      nombre: p.nombre || "Sin nombre",
+      descripcion: p.descripcion || "",
+      categoria: p.categoria || "general",
+      precio: parseFloat(p.precio) || 0,
+      precioAntes: p.precioAntes ? parseFloat(p.precioAntes) : null,
+      imagen: p.imagen || "",
+      galeria: p.galeria ? p.galeria.split(",") : [],
+      badge: p.badge || ""
+    }));
+
+    // Avisar a la página que ya cargó
+    window.dispatchEvent(new Event("productosLoaded"));
+
+  } catch (error) {
+    console.error("Error cargando productos:", error);
+  }
+}
+
+// Ejecutar carga
+cargarDesdeGoogleSheets();
