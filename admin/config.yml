@@ -1,5 +1,36 @@
 backend:
   name: git-gateway
+  branch: main # Cambia a la rama que uses (ej. master) si aplica
+
+media_folder: "productos/banner/imagenes" # carpeta en el repo donde quedarán las imágenes subidas
+public_folder: "/productos/banner/imagenes"
+
+publish_mode: editorial_workflow # opcional, quita si no quieres workflow editorial
+
+collections:
+  - name: "productos"
+    label: "Productos"
+    folder: "productos/contenido"
+    create: true
+    slug: "{{slug}}"
+    media_folder: "../banner/imagenes" # relativo a la carpeta de los productos
+    public_folder: "/productos/banner/imagenes"
+    extension: "json"
+    fields:
+      - { label: "Título", name: "titulo", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string", hint: "usa este campo en la URL, p.e. patin-x" }
+      - { label: "ID", name: "id", widget: "string", required: false }
+      - { label: "Descripción", name: "descripcion", widget: "text" }
+      - { label: "Precio", name: "precio", widget: "number" }
+      - { label: "Imagen", name: "imagen", widget: "image", required: false }
+      - { label: "Categoría", name: "categoria", widget: "string" }
+      - { label: "Disponible", name: "disponible", widget: "boolean", default: true }
+      - { label: "Metadatos (opcional)", name: "meta", widget: "object", required: false, fields:
+          - { label: "marca", name: "marca", widget: "string", required: false }
+          - { label: "peso", name: "peso", widget: "string", required: false }
+        }
+backend:
+  name: git-gateway
   branch: main
 
 media_folder: "productos/imagenes"

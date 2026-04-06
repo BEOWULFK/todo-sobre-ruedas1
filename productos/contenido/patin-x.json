@@ -1,0 +1,14 @@
+{
+  "titulo": "Patín X Pro",
+  "slug": "patin-x-pro",
+  "id": "patin-x-pro-001",
+  "descripcion": "Patín profesional, ajuste cómodo y ruedas de alto rendimiento.",
+  "precio": 129900,
+  "imagen": "patin-x-pro.jpg",
+  "categoria": "patines",
+  "disponible": true,
+  "meta": {
+    "marca": "MarcaEjemplo",
+    "peso": "2.1kg"
+  }
+}
