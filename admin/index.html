@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -10,5 +10,123 @@
     <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
   </head>
   <body>
-  </body>
-</html>
+    <h1>Panel de administración</h1>
+    <p>Usa este panel para iniciar sesión (Netlify Identity) y abrir Netlify CMS.</p>
+
+    <div id="login-row">
+      <button id="netlify-login">Iniciar sesión (Netlify Identity)</button>
+      <button id="open-cms" class="secondary">Abrir Netlify CMS</button>
+      <span id="netlify-user" style="display:none;"></span>
+    </div>
+
+    <script>
+      // Asegúrate de que el widget esté disponible
+      const identity = window.netlifyIdentity;
+
+      if (identity) {
+        identity.on('init', user => {
+          if (user) showUser(user);
+        });
+
+        identity.init();
+
+        document.getElementById('netlify-login').addEventListener('click', () => {
+          identity.open();
+        });
+
+        document.getElementById('open-cms').addEventListener('click', () => {
+          // Abrir la ruta del CMS. Si quieres abrir la raíz del CMS usa '/admin/'
+          window.location.href = '/admin/#/collections/productos';
+        });
+
+        identity.on('login', user => {
+          identity.close();
+          showUser(user);
+          // Redirigir al CMS automáticamente si lo prefieres
+          // window.location.href = '/admin/';
+        });
+
+        identity.on('logout', () => {
+          document.getElementById('netlify-user').style.display = 'none';
+        });
+      } else {
+        // Si por alguna razón el widget no está cargado
+        console.warn('Netlify Identity widget no está disponible');
+      }
+
+      function showUser(user) {
+        const span = document.getElementById('netlify-user');
+        span.textContent = user && user.email ? user.email : 'Usuario';
+        span.style.display = 'inline';
+      }
+    <!doctype html>
+    <html lang="es">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Admin — Todo Sobre Ruedas</title>
+        <style>
+          body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin: 2rem; }
+          #login-row { display:flex; gap:1rem; align-items:center }
+          #netlify-user { font-weight: 600; color: #0b6; }
+          button { background:#111827;color:#fff;border:none;padding:.6rem 1rem;border-radius:6px;cursor:pointer }
+          button.secondary { background:#e5e7eb;color:#111827 }
+        </style>
+        <!-- Netlify Identity Widget (requerido para login) -->
+        <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+        <!-- Netlify CMS -->
+        <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+      </head>
+      <body>
+        <h1>Panel de administración</h1>
+        <p>Usa este panel para iniciar sesión (Netlify Identity) y abrir Netlify CMS.</p>
+
+        <div id="login-row">
+          <button id="netlify-login">Iniciar sesión (Netlify Identity)</button>
+          <button id="open-cms" class="secondary">Abrir Netlify CMS</button>
+          <span id="netlify-user" style="display:none;"></span>
+        </div>
+
+        <script>
+          // Asegúrate de que el widget esté disponible
+          const identity = window.netlifyIdentity;
+
+          if (identity) {
+            identity.on('init', user => {
+              if (user) showUser(user);
+            });
+
+            identity.init();
+
+            document.getElementById('netlify-login').addEventListener('click', () => {
+              identity.open();
+            });
+
+            document.getElementById('open-cms').addEventListener('click', () => {
+              // Abrir la ruta del CMS. Si quieres abrir la raíz del CMS usa '/admin/'
+              window.location.href = '/admin/#/collections/productos';
+            });
+
+            identity.on('login', user => {
+              identity.close();
+              showUser(user);
+              // Redirigir al CMS automáticamente si lo prefieres
+              // window.location.href = '/admin/';
+            });
+
+            identity.on('logout', () => {
+              document.getElementById('netlify-user').style.display = 'none';
+            });
+          } else {
+            // Si por alguna razón el widget no está cargado
+            console.warn('Netlify Identity widget no está disponible');
+          }
+
+          function showUser(user) {
+            const span = document.getElementById('netlify-user');
+            span.textContent = user && user.email ? user.email : 'Usuario';
+            span.style.display = 'inline';
+          }
+        </script>
+      </body>
+    </html>

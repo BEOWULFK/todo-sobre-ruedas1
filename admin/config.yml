@@ -29,6 +29,7 @@ collections:
           - { label: "marca", name: "marca", widget: "string", required: false }
           - { label: "peso", name: "peso", widget: "string", required: false }
         }
+
 backend:
   name: git-gateway
   branch: main
