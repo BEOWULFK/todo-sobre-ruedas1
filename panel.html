@@ -1,31 +1,90 @@
-<h2>Panel Admin</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Panel Admin</title>
 
-<input id="nombre" placeholder="Nombre">
-<input id="precio" placeholder="Precio">
+<style>
+body {
+  font-family: Arial;
+  background: #1e1e2f;
+  color: white;
+  padding: 20px;
+}
 
-<button onclick="crear()">Crear Producto</button>
+h2 {
+  text-align: center;
+}
 
-<hr>
+.form {
+  background: #2f2f4f;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  background: #00c3ff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.producto {
+  background: #2f2f4f;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📦 Panel Admin</h2>
+
+<div class="form">
+  <input id="nombre" placeholder="Nombre">
+  <textarea id="descripcion" placeholder="Descripción"></textarea>
+  <input id="categoria" placeholder="Categoría">
+  <input id="precio" placeholder="Precio">
+  <input id="imagen" placeholder="URL Imagen">
+
+  <button onclick="crear()">Crear Producto</button>
+</div>
 
 <div id="lista"></div>
 
 <script>
 const API = "https://backend-catalogo-r31s.onrender.com";
 
-// 🔐 PROTECCIÓN
 if (!localStorage.getItem("admin")) {
   alert("No autorizado");
   window.location.href = "admin.html";
 }
 
-// 🔹 CREAR
 async function crear() {
   await fetch(API + "/productos", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
-      nombre: document.getElementById("nombre").value,
-      precio: document.getElementById("precio").value
+      nombre: nombre.value,
+      descripcion: descripcion.value,
+      categoria: categoria.value,
+      precio: precio.value,
+      imagen: imagen.value,
+      galeria: "",
+      badge: ""
     })
   });
 
@@ -33,7 +92,6 @@ async function crear() {
   cargar();
 }
 
-// 🔹 CARGAR
 async function cargar() {
   const res = await fetch(API + "/productos");
   const data = await res.json();
@@ -43,24 +101,27 @@ async function cargar() {
 
   data.forEach(p => {
     lista.innerHTML += `
-      <div style="margin-bottom:10px;">
-        ${p.nombre} - $${p.precio}
+      <div class="producto">
+        <img src="${p.imagen}" width="100"><br>
+        <b>${p.nombre}</b><br>
+        ${p.descripcion}<br>
+        $${p.precio}<br>
         <button onclick="eliminar(${p.id})">Eliminar</button>
       </div>
     `;
   });
 }
 
-// 🔹 ELIMINAR
 async function eliminar(id) {
   await fetch(API + "/productos/" + id, {
     method: "DELETE"
   });
 
-  alert("Eliminado");
   cargar();
 }
 
-// INICIAR
 cargar();
 </script>
+
+</body>
+</html>

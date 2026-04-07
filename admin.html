@@ -1,9 +1,62 @@
-<h2>Login Admin</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
 
-<input id="usuario" placeholder="Usuario">
-<input id="password" type="password" placeholder="Contraseña">
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
 
-<button onclick="login()">Entrar</button>
+.login-box {
+  background: #2f2f4f;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #00c3ff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0099cc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+  <h2>🔐 Admin</h2>
+
+  <input id="usuario" placeholder="Usuario">
+  <input id="password" type="password" placeholder="Contraseña">
+
+  <button onclick="login()">Entrar</button>
+</div>
 
 <script>
 const API = "https://backend-catalogo-r31s.onrender.com";
@@ -12,25 +65,22 @@ async function login() {
   const usuario = document.getElementById("usuario").value;
   const password = document.getElementById("password").value;
 
-  try {
-    const res = await fetch(API + "/login", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ usuario, password })
-    });
+  const res = await fetch(API + "/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ usuario, password })
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (data.success) {
-      localStorage.setItem("admin", "true");
-      window.location.href = "panel.html";
-    } else {
-      alert("Credenciales incorrectas");
-    }
-
-  } catch (error) {
-    console.error(error);
-    alert("Error conectando con el servidor");
+  if (data.success) {
+    localStorage.setItem("admin", "true");
+    window.location.href = "panel.html";
+  } else {
+    alert("Credenciales incorrectas");
   }
 }
 </script>
+
+</body>
+</html>
