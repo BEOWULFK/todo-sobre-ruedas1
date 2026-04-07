@@ -1,57 +1,47 @@
-// Loader: fetch productos/data.json and set window.productos
+// 🔥 Loader desde API (MySQL)
 (function(){
+
   function setProductos(data){
-    var list = (data && data.productos) ? data.productos : (Array.isArray(data) ? data : []);
-    window.productos = list;
-    try{ window.dispatchEvent(new CustomEvent('productosLoaded')); }catch(e){}
-  }
+    // validar que sea array
+    var list = Array.isArray(data) ? data : [];
 
-  if (typeof fetch === 'function'){
-    fetch('productos/data.json', {cache: 'no-store'})
-      .then(function(r){ if (!r.ok) throw new Error('Fetch error'); return r.json(); })
-      .then(setProductos)
-      .catch(function(){ setProductos([]); });
-  } else {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET','productos/data.json', true);
-    xhr.onreadystatechange = function(){
-      if (xhr.readyState === 4){
-        if (xhr.status >= 200 && xhr.status < 400){
-          try{ setProductos(JSON.parse(xhr.responseText)); }catch(e){ setProductos([]); }
-        } else setProductos([]);
+    // convertir galeria (string → array)
+    list = list.map(p => {
+      let galeria = [];
+
+      try {
+        galeria = p.galeria ? JSON.parse(p.galeria) : [];
+      } catch(e) {
+        galeria = [];
       }
-    };
-    try{ xhr.send(); }catch(e){ setProductos([]); }
+
+      return {
+        ...p,
+        galeria: galeria
+      };
+    });
+
+    // guardar global
+    window.productos = list;
+
+    // avisar a tu sistema (esto ya lo usas en tu HTML)
+    try{
+      window.dispatchEvent(new CustomEvent('productosLoaded'));
+    }catch(e){}
   }
+
+  // 🔹 fetch desde tu backend
+  if (typeof fetch === 'function'){
+    fetch("http://localhost:3000/productos", { cache: 'no-store' })
+      .then(function(response){
+        if (!response.ok) throw new Error("Error en la API");
+        return response.json();
+      })
+      .then(setProductos)
+      .catch(function(error){
+        console.error("❌ Error cargando productos:", error);
+        setProductos([]);
+      });
+  }
+
 })();
-
-let productos = [];
-
-async function cargarDesdeGoogleSheets() {
-  try {
-    const url = "https://opensheet.elk.sh/1ohf6HDKaVAB9pZ6ArUuzIYLi5AKHnb0PXwzvLDo8qKM/Hoja1";
-
-    const res = await fetch(url);
-    const data = await res.json();
-
-    productos = data.map(p => ({
-      nombre: p.nombre || "Sin nombre",
-      descripcion: p.descripcion || "",
-      categoria: p.categoria || "general",
-      precio: parseFloat(p.precio) || 0,
-      precioAntes: p.precioAntes ? parseFloat(p.precioAntes) : null,
-      imagen: p.imagen || "",
-      galeria: p.galeria ? p.galeria.split(",") : [],
-      badge: p.badge || ""
-    }));
-
-    // Avisar a la página que ya cargó
-    window.dispatchEvent(new Event("productosLoaded"));
-
-  } catch (error) {
-    console.error("Error cargando productos:", error);
-  }
-}
-
-// Ejecutar carga
-cargarDesdeGoogleSheets();
