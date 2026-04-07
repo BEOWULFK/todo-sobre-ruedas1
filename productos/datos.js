@@ -32,7 +32,7 @@
 
   // 🔹 fetch desde tu backend
   if (typeof fetch === 'function'){
-    fetch("http://localhost:3000/productos", { cache: 'no-store' })
+    fetch("maglev.proxy.rlwy.net:47596", { cache: 'no-store' })
       .then(function(response){
         if (!response.ok) throw new Error("Error en la API");
         return response.json();
